@@ -19,6 +19,7 @@ $app->setSignature('./proxier');
 $app->registerCommand('proxy', function (CommandCall $input) {
     $url = $input->hasParam('url') ? $input->getParam('url') : null;
     $method = strtoupper($input->hasParam('method') ? $input->getParam('method') : 'GET');
+    $headers = json_decode($input->hasParam('headers') ? $input->getParam('headers') : '{}', true);
 
     if (empty($url) || ! filter_var($url, FILTER_VALIDATE_URL)) {
         echo "Please specify a target url.\n";
@@ -39,6 +40,7 @@ $app->registerCommand('proxy', function (CommandCall $input) {
     $request = new Request(
         $method,
         $url,
+        $headers,
     );
     $response = $proxier->proxy($request);
     $resource = fopen($output, 'w+');
