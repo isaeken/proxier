@@ -18,10 +18,17 @@ $app->setSignature('./proxier');
 
 $app->registerCommand('proxy', function (CommandCall $input) {
     $url = $input->hasParam('url') ? $input->getParam('url') : null;
+    $method = strtoupper($input->hasParam('method') ? $input->getParam('method') : 'GET');
 
-    if (empty($url)) {
+    if (empty($url) || ! filter_var($url, FILTER_VALIDATE_URL)) {
         echo "Please specify a target url.\n";
         echo "Example: proxier proxy url=https://isaeken.com.tr\n";
+        exit;
+    }
+
+    if (! in_array(strtoupper($method), ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])) {
+        echo "Please specify a valid method.\n";
+        echo "Example: proxier proxy url=https://isaeken.com.tr method=GET\n";
         exit;
     }
 
@@ -29,7 +36,11 @@ $app->registerCommand('proxy', function (CommandCall $input) {
 
     $proxier = new Proxier();
     $proxier->boot();
-    $response = $proxier->proxy(new Request('GET', $url));
+    $request = new Request(
+        $method,
+        $url,
+    );
+    $response = $proxier->proxy($request);
     $resource = fopen($output, 'w+');
 
     if ($resource === false) {
