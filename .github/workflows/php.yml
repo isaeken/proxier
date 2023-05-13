@@ -24,7 +24,7 @@ jobs:
           extensions: none, iconv, json, curl, dom, mbstring, xml, zip
 
       - name: Install dependencies with Composer
-        run: ./tools/composer update --no-interaction --no-ansi --no-progress
+        run: composer update --no-interaction --no-ansi --no-progress
 
       - name: Run test suite
         run: composer run-script test
