@@ -25,10 +25,19 @@ $app->registerCommand('proxy', function (CommandCall $input) {
         exit;
     }
 
+    $output = $input->hasParam('output') ? $input->getParam('output') : 'php://stdout';
+
     $proxier = new Proxier();
     $proxier->boot();
     $response = $proxier->proxy(new Request('GET', $url));
-    echo $response->getBody();
+    $resource = fopen($output, 'w+');
+
+    if ($resource === false) {
+        echo "Could not open output file.\n";
+        exit;
+    }
+
+    fwrite($resource, $response->getBody());
 });
 
 try {
