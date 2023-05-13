@@ -19,31 +19,31 @@ composer global require isaeken/proxier
 ## Tool Usage
 
 ```bash
-proxier proxy <url>=<proxy_url> method=<method> headers=<headers>
+proxier <url> --method=<method> --headers=<headers>
 ``` 
 
 ### Proxy an URL
 
 ```bash
-proxier proxy http://isaeken.com.tr
+proxier http://isaeken.com.tr
 ```
 
 ### Proxy an URL with custom html header
 
 ```bash
-proxier proxy http://isaeken.com.tr headers="{'Content-Type': 'text/html'}"
+proxier http://isaeken.com.tr --headers="{'Content-Type': 'text/html'}"
 ```
 
 ### Proxy an URL with custom method
 
 ```bash
-proxier proxy http://isaeken.com.tr method=POST
+proxier http://isaeken.com.tr --method=POST
 ```
 
 ### Proxy an URL and save to a file
 
 ```bash
-proxier proxy http://isaeken.com.tr output=index.html
+proxier http://isaeken.com.tr --output=index.html
 ```
 
 ## Usage

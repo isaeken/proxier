@@ -9,52 +9,57 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use GuzzleHttp\Psr7\Request;
 use IsaEken\Proxier\Proxier;
-use Minicli\App;
-use Minicli\Command\CommandCall;
-use Minicli\Exception\CommandNotFoundException;
 
-$app = new App();
-$app->setSignature('./proxier');
+function getArgument(string $name, mixed $default = null): mixed
+{
+    global $argv;
+    $name = '--' . ltrim($name, '-');
 
-$app->registerCommand('proxy', function (CommandCall $input) {
-    $url = $input->hasParam('url') ? $input->getParam('url') : null;
-    $method = strtoupper($input->hasParam('method') ? $input->getParam('method') : 'GET');
-    $headers = json_decode($input->hasParam('headers') ? $input->getParam('headers') : '{}', true);
+    foreach ($argv as $key => $value) {
+        if (str_starts_with($value, $name . '=')) {
+            $value = explode('=', $value, 2)[1] ?? null;
 
-    if (empty($url) || ! filter_var($url, FILTER_VALIDATE_URL)) {
-        echo "Please specify a target url.\n";
-        echo "Example: proxier proxy url=https://isaeken.com.tr\n";
-        exit;
+            if (empty($value)) {
+                return $default;
+            }
+
+            return $value;
+        }
     }
 
-    if (! in_array(strtoupper($method), ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])) {
-        echo "Please specify a valid method.\n";
-        echo "Example: proxier proxy url=https://isaeken.com.tr method=GET\n";
-        exit;
-    }
-
-    $output = $input->hasParam('output') ? $input->getParam('output') : 'php://stdout';
-
-    $proxier = new Proxier();
-    $proxier->boot();
-    $request = new Request(
-        $method,
-        $url,
-        $headers,
-    );
-    $response = $proxier->proxy($request);
-    $resource = fopen($output, 'w+');
-
-    if ($resource === false) {
-        echo "Could not open output file.\n";
-        exit;
-    }
-
-    fwrite($resource, $response->getBody());
-});
-
-try {
-    $app->runCommand($argv);
-} catch (CommandNotFoundException $e) {
-    echo 'An error occurred running the command: ',  $e->getMessage(), "\n";
+    return $default;
 }
+
+$url = $argv[1] ?? null;
+$method = getArgument('method', 'GET');
+$headers = json_decode(getArgument('headers', '{}'), true);
+$output = getArgument('output', 'php://stdout');
+
+if (empty($url) || ! filter_var($url, FILTER_VALIDATE_URL)) {
+    echo "Please specify a target url.\n";
+    echo "Example: proxier https://isaeken.com.tr\n";
+    exit;
+}
+
+if (! in_array($method, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])) {
+    echo "Please specify a valid method.\n";
+    echo "Example: proxier https://isaeken.com.tr GET\n";
+    exit;
+}
+
+$proxier = new Proxier();
+$proxier->boot();
+$request = new Request(
+    $method,
+    $url,
+    $headers,
+);
+$response = $proxier->proxy($request);
+$resource = fopen($output, 'w+');
+
+if ($resource === false) {
+    echo "Could not open output file.\n";
+    exit;
+}
+
+fwrite($resource, $response->getBody());
