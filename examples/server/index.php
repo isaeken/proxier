@@ -6,6 +6,7 @@ use IsaEken\Proxier\Proxier;
 use IsaEken\Proxier\Features;
 use IsaEken\Proxier\Loggers;
 use IsaEken\Proxier\Url;
+use Psr\Http\Client\ClientExceptionInterface;
 
 if (empty($_GET['url'])) {
     echo <<<HTML
@@ -54,10 +55,14 @@ $proxier = new Proxier();
 $proxier->addFeature(...$features);
 $proxier->setLogger(new Loggers\StreamLogger($accessLog, $errorLog));
 $proxier->boot();
-$response = $proxier->proxyUsingGlobals($target);
 
-foreach ($response->getHeaders() as $key => $value) {
-    header($key . ": " . $value[0]);
+try {
+    $response = $proxier->proxyUsingGlobals($target);
+    foreach ($response->getHeaders() as $key => $value) {
+        header($key . ": " . $value[0]);
+    }
+
+    echo $response->getBody()->getContents();
+} catch (ClientExceptionInterface $e) {
+    echo $e->getMessage();
 }
-
-echo $response->getBody()->getContents();
