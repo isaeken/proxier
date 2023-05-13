@@ -44,7 +44,7 @@ $proxier->run();
 
 ```php
 <?php
-class Logger implements \IsaEken\Proxier\LoggerInterface
+class Logger implements \IsaEken\Proxier\Contracts\Logger
 {
     public function log(string $url): void
     {

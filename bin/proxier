@@ -1,6 +1,38 @@
 #!/bin/php
 <?php
 
+if (php_sapi_name() !== 'cli') {
+    exit;
+}
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// @todo
+use GuzzleHttp\Psr7\Request;
+use IsaEken\Proxier\Proxier;
+use Minicli\App;
+use Minicli\Command\CommandCall;
+use Minicli\Exception\CommandNotFoundException;
+
+$app = new App();
+$app->setSignature('./proxier');
+
+$app->registerCommand('proxy', function (CommandCall $input) {
+    $url = $input->hasParam('url') ? $input->getParam('url') : null;
+
+    if (empty($url)) {
+        echo "Please specify a target url.\n";
+        echo "Example: proxier proxy url=https://isaeken.com.tr\n";
+        exit;
+    }
+
+    $proxier = new Proxier();
+    $proxier->boot();
+    $response = $proxier->proxy(new Request('GET', $url));
+    echo $response->getBody();
+});
+
+try {
+    $app->runCommand($argv);
+} catch (CommandNotFoundException $e) {
+    echo 'An error occurred running the command: ',  $e->getMessage(), "\n";
+}
