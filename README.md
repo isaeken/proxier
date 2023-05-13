@@ -2,69 +2,65 @@
 
 A simple PHP web proxy.
 
-## Usage
+## Install
 
-### Install
+### As a standalone package
 
 ```bash
-composer require "isaeken/proxier"
+composer require isaeken/proxier
 ```
+
+### As a global tool
+
+```bash
+composer global require isaeken/proxier
+```
+
+## Tool Usage
+
+```bash
+proxier proxy <url>=<proxy_url> method=<method> headers=<headers>
+``` 
 
 ### Proxy an URL
 
-```php
-<?php
-
-require_once __DIR__ . '/vendor/autoload.php';
-
-use IsaEken\Proxier\Proxier;
-
-$proxier = new Proxier();
-$proxier->setUrl('http://isaeken.com.tr');
-$proxier->run();
+```bash
+proxier proxy http://isaeken.com.tr
 ```
 
 ### Proxy an URL with custom html header
 
-```php
-$proxier = new Proxier();
-$proxier->setUrl('http://isaeken.com.tr');
-$proxier->setHeader(<<<HTML
-<!--
-Your html code is here.
--->
-HTML
-);
-$proxier->run();
+```bash
+proxier proxy http://isaeken.com.tr headers="{'Content-Type': 'text/html'}"
 ```
 
-### Proxy with custom logger
+### Proxy an URL with custom method
 
-#### Create a logger class
-
-```php
-<?php
-class Logger implements \IsaEken\Proxier\Contracts\Logger
-{
-    public function log(string $url): void
-    {
-        echo $url;
-    }
-}
+```bash
+proxier proxy http://isaeken.com.tr method=POST
 ```
 
-#### Create your proxy
+### Proxy an URL and save to a file
+
+```bash
+proxier proxy http://isaeken.com.tr output=index.html
+```
+
+## Usage
+
+### Proxy an URL
 
 ```php
+use IsaEken\Proxier\Proxier;
+
 $proxier = new Proxier();
-$proxier->setUrl('http://isaeken.com.tr');
-$proxier->setLogger(new Logger());
-$proxier->run();
+$proxier->boot();
+$proxier->proxyUsingGlobals('http://isaeken.com.tr');
 ```
 
 ## Notice
 
-Do not use this package with a framework.
+This package is under development. Please do not use it in production.
 
 ## License
 
