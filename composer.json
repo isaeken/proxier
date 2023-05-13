@@ -1,17 +1,33 @@
 {
   "name": "isaeken/proxier",
-  "version": "1.1.1",
   "description": "Web proxy for PHP",
+  "version": "1.1.1",
+  "type": "library",
   "keywords": [
     "proxy",
-    "web",
-    "php"
+    "web"
   ],
+  "homepage": "https://github.com/isaeken/proxier",
+  "readme": "README.md",
   "license": "MIT",
   "authors": [
     {
       "name": "Isa Eken",
-      "email": "hello@isaeken.com.tr"
+      "email": "hello@isaeken.com.tr",
+      "homepage": "https://isaeken.com.tr",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "wiki": "https://github.com/isaeken/proxier/wiki",
+    "issues": "https://github.com/isaeken/proxier/issues",
+    "source": "https://github.com/isaeken/proxier",
+    "docs": "https://github.com/isaeken/proxier/wiki"
+  },
+  "funding": [
+    {
+      "url": "https://github.com/isaeken",
+      "type": "github"
     }
   ],
   "bin": "bin/proxier",
@@ -30,7 +46,7 @@
     "minicli/minicli": "^4.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.5",
+    "phpunit/phpunit": "^9.6.8",
     "symfony/var-dumper": "^6.2"
   },
   "autoload": {
