@@ -1,5 +1,7 @@
 # PHP Web Proxy
 
+> DEPRECATED
+
 A simple PHP web proxy.
 
 ## Install
